@@ -35,6 +35,9 @@ public class DecryptResource extends CordovaPlugin {
     ".css",
   };
 
+  private static final String[] INCLUDE_FILES = new String[] { };
+  private static final String[] EXCLUDE_FILES = new String[] { };
+
   private String URL_PREFIX;
   private String launchUri;
 

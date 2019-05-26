@@ -39,8 +39,8 @@ public class DecryptResource extends CordovaPlugin {
   private static final String[] INCLUDE_FILES = new String[] { };
   private static final String[] EXCLUDE_FILES = new String[] { };
 
-  private String URL_PREFIX;
-  private String launchUri;
+  //private String URL_PREFIX;
+  //private String launchUri;
 
     public void changingPort(CordovaPreferences preferences){
     String port      = preferences.getString("cryptoPort","8080");

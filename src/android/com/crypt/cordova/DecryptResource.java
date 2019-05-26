@@ -45,18 +45,25 @@ public class DecryptResource extends CordovaPlugin {
 
   @Override
   public Uri remapUri(Uri uri) {
-    changingPort(preferences);
+
+      if (uri.toString().indexOf("/+++/") > -1) {
+          return this.toPluginUri(uri);
+      } else {
+          return uri;
+      }
+/*    changingPort(preferences);
     this.launchUri = uri.toString();
     if (this.launchUri.toString().startsWith(URL_PREFIX)) {
       return this.toPluginUri(uri);
     }
-    return uri;
+    return uri;*/
   }
 
   @Override
   public CordovaResourceApi.OpenForReadResult handleOpenForRead(Uri uri) throws IOException {
     Uri oriUri    = fromPluginUri(uri);
-    String uriStr = this.tofileUri(oriUri.toString().split("\\?")[0]);
+    //String uriStr = this.tofileUri(oriUri.toString().split("\\?")[0]);
+    String uriStr = oriUri.toString().replace("/+++/", "/").split("\\?")[0];
     CordovaResourceApi.OpenForReadResult readResult =  this.webView.getResourceApi().openForRead(Uri.parse(uriStr), true);
 
     if (!isCryptFiles(uriStr)) {
@@ -91,7 +98,7 @@ public class DecryptResource extends CordovaPlugin {
     return new CordovaResourceApi.OpenForReadResult(
       readResult.uri, byteInputStream, readResult.mimeType, readResult.length, readResult.assetFd);
   }
-
+/*
   private String tofileUri(String uri) {
     if (uri.startsWith(URL_PREFIX)) {
       uri = uri.replace(URL_PREFIX, "file:///android_asset/www/");
@@ -109,5 +116,26 @@ public class DecryptResource extends CordovaPlugin {
       }
     }
     return false;
+  }
+*/
+
+  private boolean isCryptFiles(String uri) {
+      String checkPath = uri.replace("file:///android_asset/www/", "");
+      if (!this.hasMatch(checkPath, INCLUDE_FILES)) {
+          return false;
+      }
+      if (this.hasMatch(checkPath, EXCLUDE_FILES)) {
+          return false;
+      }
+      return true;
+  }
+
+  private boolean hasMatch(String text, String[] regexArr) {
+      for (String regex : regexArr) {
+          if (Pattern.compile(regex).matcher(text).find()) {
+              return true;
+          }
+      }
+      return false;
   }
 }
